@@ -1,2 +1,2 @@
 # fractol
-Fractal graphis generator written in C
+Fractal graphics generator written in C
