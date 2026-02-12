@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   fractol.c                                         :+:    :+:             */
+/*   main.c                                            :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: dponte <dponte@student.codam.nl>            +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/12/10 16:26:02 by dponte       #+#    #+#                  */
-/*   Updated: 2025/12/10 16:43:16 by dponte       ########   odam.nl          */
+/*   Updated: 2026/02/12 14:10:24 by dponte       ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ void	make_square(t_data *data, int x, int y, int size, int color)
 		my_mlx_pixel_put(data, x + size, y + size - i, color);
 		i++;
 	}
+}
+
+void	make_circle(t_data *data, int x, int y, int size, int color)
+{
+	
 }
 
 int	main()

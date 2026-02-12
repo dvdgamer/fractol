@@ -19,3 +19,5 @@ typedef struct s_data {
 	int		line_length;
 	int		endian;
 }					t_data;
+
+int	create_trgb(int t, int r, int g, int b);
