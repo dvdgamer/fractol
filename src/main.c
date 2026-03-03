@@ -6,12 +6,15 @@
 /*   By: dponte <dponte@student.codam.nl>            +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/12/10 16:26:02 by dponte       #+#    #+#                  */
-/*   Updated: 2026/02/12 14:10:24 by dponte       ########   odam.nl          */
+/*   Updated: 2026/02/26 16:34:36 by dponte       ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-#include <stdio.h>
+#define MIN_REAL -1
+#define MAX_REAL 2
+#define MIN_IMAG -1.2
+#define MAX_IMAG 1.2
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -22,42 +25,80 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void	make_square(t_data *data, int x, int y, int size, int color)
+//FIX: This formula
+int		mandelbrot_formula(double a, double b)
 {
-	int	i;
+	int		i;
+	double	a2;
+	double	b2;
 
 	i = 0;
-	while (i <= size)
+	while ((a2 + b2) <= 4 && i <= MAX_INTERATION)
 	{
-		my_mlx_pixel_put(data, x + i, y, color);
-		my_mlx_pixel_put(data, x, y + i, color);
-		my_mlx_pixel_put(data, x + size - i, y + size, color);
-		my_mlx_pixel_put(data, x + size, y + size - i, color);
+		a2 = a * a;
+		b2 = b * b;
+		a = a2 - 2 + a0;
+		b = 2 * a * b * b0;
 		i++;
 	}
+	return i;
 }
 
-void	make_circle(t_data *data, int x, int y, int size, int color)
+void	map_screen(t_data *data, double pixel_x, double pixel_y)
 {
-	
+	double a;
+	double b;
+
+	a = (pixel_x / SCREEN_L) * (MAX_REAL - MIN_REAL) + MIN_REAL;
+	b = (pixel_y / SCREEN_H) + (MAX_IMAG - MIN_IMAG) + MIN_IMAG;
+}
+
+// x is the real part
+// y is the imaginary part
+void	make_set(t_data *data, int color)
+{
+	double	x_coord;
+	double	y_coord;
+	double	a;
+	double	b;
+
+	x_coord = 0;
+	y_coord = 0;
+	b = 0;
+	while (x_coord < SCREEN_H)
+	{
+		while (y_coord < SCREEN_L)
+		{
+			a = (x_coord / SCREEN_L) * (MAX_REAL - MIN_REAL) + MIN_REAL;
+			b = (y_coord / SCREEN_H) + (MAX_IMAG - MIN_IMAG) + MIN_IMAG;
+			if (mandelbrot_formula(a, b) >= 95)
+				my_mlx_pixel_put(data, x_coord, y_coord, color);
+			y_coord++;
+		}
+		x_coord++;
+	}
 }
 
 int	main()
 {
 	int		offset;
+	int		center_l;
+	int		center_h;
 	void	*mlx;
 	void	*mlx_win;
 	t_data	img;
 
+	center_l = SCREEN_L / 2;
+	center_h = SCREEN_H / 2;
 	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 640, 480, "fractal-ooooooooo");
-	img.img = mlx_new_image(mlx, 640, 480);
+	mlx_win = mlx_new_window(mlx, SCREEN_L, SCREEN_H, "fractal-ooooooooo");
+	img.img = mlx_new_image(mlx, SCREEN_L, SCREEN_H);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 	int put_pixel = mlx_pixel_put(mlx, mlx_win, 1000, 500, 2);
-	/* my_mlx_pixel_put(&img, 5, 22, 0x00FF0000); */
-	make_square(&img, 10, 10, 15, 0x00FF0000);
-	make_square(&img, 200, 200, 25, 0x00FF0000);
-	/* make_square(&img, 27, 27, 200, 0x00FF0000); */
+	/* make_square(&img, 10, 10, 15, 0x00FF0000); */
+	/* make_square(&img, 200, 200, 25, 0x00FF0000); */
+	/* make_circle(&img, 230, 200, 200, 0x00FF0000); */
+	make_set(&img, 0x00FF0000);
 	mlx_put_image_to_window(mlx,mlx_win, img.img, 10, 10);
 	mlx_loop(mlx);
 }
