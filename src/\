@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include "fractol.h"
-#define MIN_REAL -2.5
-#define MAX_REAL 1.5
+#define MIN_REAL -1
+#define MAX_REAL 2
 #define MIN_IMAG -1.2
 #define MAX_IMAG 1.2
 
@@ -36,15 +36,13 @@ int		mandelbrot_formula(double a0, double b0)
 	a = a0;
 	b = b0;
 	i = 0;
-	while ((a * a + b * b) <= 4 && i < MAX_INTERATION)
+	while ((a * a + b * b) <= 4 && i <= MAX_INTERATION)
 	{
-		double temp = a * a - b * b + a0;
+        double temp = a * a - b * b + a0;
 		b = 2 * a * b + b0;
-		a = temp;
+        a = temp;
 		i++;
 	}
-	if (i >= 95)
-		printf("i: %d\n", i);
 	return i;
 }
 
@@ -71,11 +69,10 @@ void	make_set(t_data *data, int color)
 	b = 0;
 	while (x_coord < SCREEN_H)
 	{
-		y_coord = 0;
 		while (y_coord < SCREEN_L)
 		{
-			a = (x_coord / (double)SCREEN_L) * (MAX_REAL - MIN_REAL) + MIN_REAL;
-			b = (y_coord / (double)SCREEN_H) * (MAX_IMAG - MIN_IMAG) + MIN_IMAG;
+			a = (x_coord / SCREEN_L) * (MAX_REAL - MIN_REAL) + MIN_REAL;
+			b = (y_coord / SCREEN_H) + (MAX_IMAG - MIN_IMAG) + MIN_IMAG;
 			if (mandelbrot_formula(a, b) >= 95)
 				my_mlx_pixel_put(data, x_coord, y_coord, color);
 			y_coord++;
